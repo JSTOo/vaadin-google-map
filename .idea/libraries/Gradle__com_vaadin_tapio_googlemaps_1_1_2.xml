@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="Gradle: com.vaadin.tapio:googlemaps:1.1.2">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.vaadin.tapio/googlemaps/1.1.2/1e7b36e325cab5b4af66497a11bae41098b97b0b/googlemaps-1.1.2.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.vaadin.tapio/googlemaps/1.1.2/4cda2d761ff9211c891d638c53843d69fb03e879/googlemaps-1.1.2-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

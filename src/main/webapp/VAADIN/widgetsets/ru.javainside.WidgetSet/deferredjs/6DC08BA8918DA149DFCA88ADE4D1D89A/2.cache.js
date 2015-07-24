@@ -1,0 +1,1 @@
+$wnd.ru_javainside_WidgetSet.runAsyncCallback2('function b8c(a){c8c()}\nfunction c8c(){d8c()}\nfunction d8c(){}\nVAb(450,1,B6e);_.$c=function g8c(){b8c(this);VSc(XSc(),tSc(this.b))};F0e(Xn)(2);\n//# sourceURL=ru.javainside.WidgetSet-2.js\n')
