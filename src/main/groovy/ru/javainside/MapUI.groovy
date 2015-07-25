@@ -7,6 +7,7 @@ import com.vaadin.tapio.googlemaps.client.LatLon
 import com.vaadin.tapio.googlemaps.client.overlays.GoogleMapMarker
 import com.vaadin.ui.Button
 import com.vaadin.ui.HorizontalLayout
+import com.vaadin.ui.Label
 import com.vaadin.ui.UI
 import com.vaadin.ui.VerticalLayout
 import org.springframework.beans.factory.annotation.Autowired
@@ -26,6 +27,10 @@ class MapUI extends UI implements Runnable {
 
     private GoogleMap googleMap
     private HashMap<String, GoogleMapMarker> markerMap = []
+    private GoogleMapMarker kakolaMarker = new GoogleMapMarker(
+            "DRAGGABLE: Kakolan vankila", new LatLon(60.44291, 22.242415),
+            true, null);
+    private Label latlon
 
     @Override
     protected void init(VaadinRequest request) {
@@ -40,7 +45,8 @@ class MapUI extends UI implements Runnable {
                     new GoogleMapMarker(
                             caption: it.deviceID,
                             position: new LatLon(it.lat, it.lng),
-                            draggable: true
+                            draggable: true,
+                            animationEnabled: false
                     )
             )
         }
@@ -60,7 +66,8 @@ class MapUI extends UI implements Runnable {
                                 new GoogleMapMarker(
                                         caption: it.deviceID,
                                         position: new LatLon(it.lat, it.lng),
-                                        draggable: true
+                                        draggable: true,
+                                        animationEnabled: false
                                 )
                         )
                     else
@@ -74,40 +81,63 @@ class MapUI extends UI implements Runnable {
         button.setSizeFull()
         layout.addComponent(button)
         Button button2 = new Button('Remove')
-        button.addClickListener({
+        button2.addClickListener({
             e->
                 googleMap.clearMarkers()
         })
-        button.setSizeFull()
+        button2.setSizeFull()
+        Button moveMarkerButton = new Button("Move kakola marker",
+                new Button.ClickListener() {
+
+                    @Override
+                    public void buttonClick(Button.ClickEvent event) {
+                        kakolaMarker.setPosition(new LatLon(60.3, 22.242415));
+                        googleMap.addMarker(kakolaMarker);
+                    }
+                });
+        Button clearMarkersButton = new Button("Remove all markers", new Button.ClickListener() {
+            @Override
+            public void buttonClick(Button.ClickEvent clickEvent) {
+                googleMap.clearMarkers();
+            }
+        });
         layout.addComponent(button2)
+        layout.addComponent(moveMarkerButton)
+        layout.addComponent(clearMarkersButton)
+        layout.addComponent(latlon = new Label())
+        latlon.setSizeFull()
         layout.setSizeFull()
         content = layout
         UI.getCurrent().setPollInterval(500)
         //layout
-       // new Thread(this).start()
+        new Thread(this).start()
     }
 
 
 
     @Override
     void run() {
-       // while (true) {
+        while (true) {
             try {
                 repository.findAll().each {
                     def marker = markerMap.get(it.deviceID)
-                    if (marker == null)
+                    if (marker == null) {
                         markerMap.put(
                                 it.deviceID,
                                 new GoogleMapMarker(
                                         caption: it.deviceID,
                                         position: new LatLon(it.lat, it.lng),
-                                        draggable: true
+                                        draggable: true,
+                                        animationEnabled: false
                                 )
                         )
+                    }
                     else
                         marker.position = new LatLon(it.lat, it.lng)
+                    latlon.caption = it.lat + ' ' + it.lng
                 }
                 googleMap.clearMarkers()
+                Thread.sleep(environment.getProperty('vaadin.ui.map.delay') as long)
                 markerMap.each { k, v ->
                     googleMap.addMarker(v)
                 }/*
@@ -122,6 +152,6 @@ class MapUI extends UI implements Runnable {
             } catch (Exception e) {
                 e.printStackTrace()
             }
-      //  }
+        }
     }
 }
